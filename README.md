@@ -1,3 +1,7 @@
+> **Status: Evaluation window (private under 0SxD).** This repository is staged
+> for evaluation review. License terms in LICENSE govern; contents may move,
+> change, or be withdrawn. See LICENSE before any use.
+
 # 143_protocol_a
 
 **Eight modules. Drop any one into CLAUDE.md and your agent changes behavior. Drop all eight and you have a different kind of agent.**
