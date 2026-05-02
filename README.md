@@ -46,6 +46,8 @@ To adopt the full protocol: copy `examples/CLAUDE_md_example.md` into your proje
 - AGENTS.md spec (Linux Foundation Agentic AI Foundation) - AGENTS.md at repo root conforms to this spec; module 08 references the stratum layer model
 - Anthropic Skills spec / agentskills.io - module composition pattern references the Agent Skills convention
 
+See also: [trinity-dialectic](https://github.com/0SxD/trinity-dialectic) for the runnable Python engine implementing the protocol's dialectic gate.
+
 ## License
 
 MIT. Copyright (c) 2026 Sage / 0SxD.
