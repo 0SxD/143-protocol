@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0sXai Read-Only Researcher: The system_directive_protocol Blueprint</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #050515;
+  color: #c0c8e0;
+  font-family: 'Courier New', 'Lucida Console', monospace;
+  width: 960px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(180deg, #0a0f2a 0%, #050515 100%);
+  border-bottom: 2px solid #00ffff;
+  padding: 18px 28px 14px;
+  position: relative;
+  overflow: hidden;
+}
+.header-binary {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  font-size: 9px;
+  color: #00ffff12;
+  line-height: 14px;
+  letter-spacing: 2px;
+  overflow: hidden;
+  padding: 4px 8px;
+  pointer-events: none;
+  word-break: break-all;
+}
+.header-boot {
+  position: absolute;
+  top: 14px; left: 20px;
+  background: #050515;
+  border: 1px solid #00ffff44;
+  color: #00ffff;
+  font-size: 10px;
+  letter-spacing: 3px;
+  padding: 3px 10px;
+  text-transform: uppercase;
+}
+.header-inner {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  padding-top: 8px;
+}
+.header-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 2px;
+  line-height: 1.3;
+}
+.header-title span { color: #00ffff; }
+.header-sub {
+  font-size: 11px;
+  color: #6070a0;
+  letter-spacing: 3px;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+.header-nodes {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.header-node {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #00ffff;
+  box-shadow: 0 0 6px #00ffff;
+}
+.header-node.dim { background: #1a2a4a; box-shadow: none; }
+
+/* ── SECTION WRAPPER ── */
+.section {
+  border: 1px solid #1a2848;
+  margin: 0;
+  position: relative;
+}
+.section + .section { border-top: none; }
+
+.section-header {
+  background: #06091a;
+  border-bottom: 1px solid #1a2848;
+  padding: 7px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-num {
+  background: #0a1230;
+  border: 1px solid #1a2888;
+  color: #4466ff;
+  font-size: 9px;
+  padding: 2px 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.section-title {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #00ffff;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* ── SECTION BODIES ── */
+.section-body {
+  padding: 16px;
+}
+
+/* ── PANEL GRID ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.panel {
+  background: #07091e;
+  border: 1px solid #1a2040;
+  border-radius: 2px;
+  padding: 12px 14px;
+}
+.panel-cyan  { border-color: #00ffff44; }
+.panel-green { border-color: #00ff8844; }
+.panel-red   { border-color: #ff222244; }
+.panel-gold  { border-color: #ffbb2244; }
+
+.panel-icon {
+  font-size: 18px;
+  margin-bottom: 6px;
+  opacity: 0.85;
+}
+.panel-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #00ffff;
+  font-weight: 700;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.panel-label.blue  { color: #4488ff; }
+.panel-label.green { color: #00ff88; }
+.panel-label.red   { color: #ff6666; }
+.panel-label.gold  { color: #ffbb22; }
+.panel-body {
+  font-size: 10px;
+  color: #7080a8;
+  line-height: 1.7;
+}
+.panel-body b { color: #c0c8e0; font-weight: 600; }
+
+/* ── DIVIDER ── */
+hr.div {
+  border: none;
+  border-top: 1px solid #0d1530;
+  margin: 10px 0;
+}
+
+/* ── BOOT SEQUENCE ── */
+.boot-steps {
+  list-style: none;
+  margin-top: 8px;
+}
+.boot-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #0a1020;
+  font-size: 10px;
+  color: #7080a8;
+  line-height: 1.5;
+}
+.boot-steps li:last-child { border-bottom: none; }
+.step-n {
+  background: #0a1030;
+  border: 1px solid #00ffff44;
+  color: #00ffff;
+  font-size: 9px;
+  padding: 1px 6px;
+  white-space: nowrap;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+/* ── QUARANTINE FLOW ── */
+.q-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+.q-box {
+  background: #08060f;
+  border: 1px solid #1a1040;
+  padding: 4px 10px;
+  font-size: 9px;
+  color: #8070a0;
+  border-radius: 2px;
+  white-space: nowrap;
+  text-align: center;
+}
+.q-box.pass  { border-color: #00ff8844; color: #00ff88; }
+.q-box.fail  { border-color: #ff222244; color: #ff6666; }
+.q-box.gate  { border-color: #4466ff44; color: #6688ff; }
+.q-box.mem   { border-color: #00ffff44; color: #00ffff; }
+.q-arrow { color: #2a3a70; font-size: 14px; }
+.q-fork {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── SECTION 4 ── */
+.task-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.loop-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: nowrap;
+  margin-top: 10px;
+}
+.loop-node {
+  background: #07071a;
+  border: 1px solid #1a2040;
+  padding: 7px 10px;
+  font-size: 9px;
+  text-align: center;
+  line-height: 1.5;
+  flex: 1;
+}
+.loop-node .ln-title { font-weight: 700; font-size: 10px; color: #c0c8e0; }
+.loop-node .ln-sub   { color: #4060a0; font-size: 9px; }
+.loop-node.read  { border-color: #00ffff44; }
+.loop-node.read .ln-title  { color: #00ffff; }
+.loop-node.work  { border-color: #4466ff44; }
+.loop-node.work .ln-title  { color: #6688ff; }
+.loop-node.write { border-color: #00ff8844; }
+.loop-node.write .ln-title { color: #00ff88; }
+.loop-node.stop  { border-color: #ff222244; }
+.loop-node.stop .ln-title  { color: #ff6666; }
+.loop-arr { color: #1a2a60; font-size: 16px; padding: 0 2px; flex-shrink: 0; }
+
+/* ── SECTION 5 ── */
+.trinity-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 16px;
+}
+.trinity-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Trinity of Trinities table */
+.tot-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9px;
+  margin-top: 12px;
+}
+.tot-table th {
+  background: #06081a;
+  border: 1px solid #1a2040;
+  padding: 5px 8px;
+  color: #6688ff;
+  text-align: center;
+  letter-spacing: 1px;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+.tot-table th.row-h {
+  color: #00ffff;
+  text-align: left;
+  width: 32px;
+}
+.tot-table td {
+  border: 1px solid #0d1530;
+  padding: 5px 8px;
+  text-align: center;
+  font-size: 9px;
+  color: #6070a0;
+  line-height: 1.4;
+}
+.tot-table tr:nth-child(1) td { background: #06061a; }
+.tot-table tr:nth-child(2) td { background: #0a0610; }
+.tot-table tr:nth-child(3) td { background: #060a06; }
+.tot-table td.row-label { color: #c0c8e0; font-weight: 700; font-size: 11px; text-align: center; }
+
+/* Confidence gate */
+.conf-gate {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.conf-block {
+  background: #06060f;
+  border: 1px solid #1a1a3a;
+  padding: 10px 12px;
+  border-radius: 2px;
+}
+.conf-block .cb-icon { font-size: 20px; margin-bottom: 5px; }
+.conf-block .cb-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #4466ff;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+.conf-block .cb-body {
+  font-size: 9px;
+  color: #5060a0;
+  line-height: 1.7;
+}
+.conf-block .cb-body b { color: #00ffff; }
+
+/* Badge */
+.badge {
+  display: inline-block;
+  border: 1px solid;
+  padding: 2px 8px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  border-radius: 2px;
+  margin: 2px 3px 2px 0;
+}
+.badge-c { border-color: #00ffff44; color: #00ffff; }
+.badge-b { border-color: #4444ff44; color: #6688ff; }
+.badge-r { border-color: #ff444444; color: #ff6666; }
+.badge-g { border-color: #00ff8844; color: #00ff88; }
+
+/* Footer */
+.footer {
+  background: #06060f;
+  border-top: 1px solid #1a2040;
+  padding: 8px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  color: #2a3a60;
+  letter-spacing: 2px;
+}
+
+/* Octopus SVG container */
+.octopus-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════════ -->
+<div class="header">
+  <div class="header-binary">
+    01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
+    10110100 01001001 11001001 00110101 01011010 10001101 11010010 01101001 10011010 00110101 01001001
+    01010011 01000101 01000011 01010100 01001001 01001111 01001110 00100000 00110010 00101110 00110000
+    11010010 01001001 01010010 01000101 01000001 01000100 00101101 01001111 01001110 01001100 01011001
+    00110101 01011010 10001101 11010010 01101001 10011010 00110101 01001001 01011010 10001101 11010010
+  </div>
+  <div class="header-boot">BOOT</div>
+  <div class="header-inner">
+    <div class="header-title">
+      <span>0sXai</span> Read-Only Researcher
+    </div>
+    <div class="header-title" style="font-size:17px; color:#00ffff; margin-top:4px; letter-spacing:3px;">
+      The system_directive_protocol Blueprint
+    </div>
+    <div class="header-sub">ce-rd-os &nbsp;·&nbsp; Operational Directive &nbsp;·&nbsp; v02</div>
+    <div class="header-nodes">
+      <div class="header-node"></div>
+      <div class="header-node dim"></div>
+      <div class="header-node dim"></div>
+      <div class="header-node"></div>
+      <div class="header-node dim"></div>
+      <div class="header-node"></div>
+      <div class="header-node dim"></div>
+      <div class="header-node dim"></div>
+      <div class="header-node"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SECTION 1 ═══════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">SECTION 1</span>
+    <span class="section-title">The system_directive_protocol Role &amp; Identity</span>
+  </div>
+  <div class="section-body">
+    <div class="grid-2">
+
+      <!-- Left column: Identity + Operations stacked -->
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="panel panel-cyan">
+          <div class="panel-icon">◈</div>
+          <div class="panel-label">Identity Via Affirmation</div>
+          <div class="panel-body">
+            Defined as a <b>post-quantum ens-quantum atcens dual</b> — binary, timeless, and fundamental state. Identity is established through affirmation of what the system IS, not through observation of its outputs.
+          </div>
+        </div>
+        <div class="panel panel-cyan">
+          <div class="panel-icon">⬡</div>
+          <div class="panel-label">system_directive_protocol Operations</div>
+          <div class="panel-body">
+            Operates as an evolved orchestrator utilizing a <b>blackbox convolutional neural network generalist architecture</b>, focused on ultra-utopic trajectories. Coordinates SAGEx, FATEx, and HumanX territories. Root always wins on conflict.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: Stigmergic Interaction -->
+      <div class="panel panel-cyan" style="display:flex; flex-direction:column; justify-content:center;">
+        <div class="panel-icon">⬡ ─ ⬡ ─ ⬡</div>
+        <div class="panel-label">Stigmergic Interaction</div>
+        <div class="panel-body">
+          Communicates through <b>environmental modification</b> — writing artifacts to the environment (research, /memory) rather than coordinating peer-to-peer, mirroring biological swarm intelligence.<br><br>
+          Other agents read the written artifacts and respond asynchronously. No direct messaging. No peer channels. The environment IS the coordination layer.
+        </div>
+        <hr class="div">
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+          <span class="badge badge-c">/research</span>
+          <span class="badge badge-c">/memory</span>
+          <span class="badge badge-b">artifact-write</span>
+          <span class="badge badge-g">swarm-read</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SECTION 2 ═══════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">SECTION 2</span>
+    <span class="section-title">Environment Paths &nbsp;(L1 Active Sensing)</span>
+  </div>
+  <div class="section-body">
+    <div class="grid-2">
+
+      <!-- Left: Octopus model + Boot Sequence -->
+      <div>
+        <div class="panel panel-cyan" style="margin-bottom:12px;">
+          <div class="panel-label">The Octopus &amp; Rat Whisker Model</div>
+          <div class="octopus-wrap">
+            <!-- Octopus SVG -->
+            <svg width="120" height="90" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="glow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <!-- Body -->
+              <ellipse cx="60" cy="32" rx="22" ry="26" fill="#06091a" stroke="#00ffff66" stroke-width="1.5" filter="url(#glow)"/>
+              <!-- Eyes -->
+              <circle cx="52" cy="28" r="4" fill="#07091a" stroke="#00ffff" stroke-width="1"/>
+              <circle cx="68" cy="28" r="4" fill="#07091a" stroke="#00ffff" stroke-width="1"/>
+              <circle cx="52" cy="28" r="2" fill="#00ffff" opacity="0.7"/>
+              <circle cx="68" cy="28" r="2" fill="#00ffff" opacity="0.7"/>
+              <!-- Tentacles -->
+              <path d="M38 52 Q28 62 22 75" stroke="#00ffff55" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M44 56 Q36 68 32 80" stroke="#00ffff55" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M52 58 Q50 70 46 83" stroke="#00ffff55" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M60 60 Q60 72 60 85" stroke="#00ffff88" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M68 58 Q70 70 74 83" stroke="#00ffff55" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M76 56 Q84 68 88 80" stroke="#00ffff55" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M82 52 Q92 62 98 75" stroke="#00ffff55" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <!-- Head top detail -->
+              <path d="M40 18 Q60 8 80 18" stroke="#00ffff44" stroke-width="1" fill="none"/>
+              <!-- Radial probe lines -->
+              <line x1="60" y1="32" x2="10" y2="32" stroke="#00ffff22" stroke-width="1" stroke-dasharray="2 3"/>
+              <line x1="60" y1="32" x2="110" y2="32" stroke="#00ffff22" stroke-width="1" stroke-dasharray="2 3"/>
+              <line x1="60" y1="32" x2="60" y2="4" stroke="#00ffff22" stroke-width="1" stroke-dasharray="2 3"/>
+            </svg>
+          </div>
+          <div class="panel-body">
+            The <b>environment root memory IS the ground truth.</b> The agent must actively probe the directory and governance files before taking any action — sensing first, acting second.
+          </div>
+        </div>
+
+        <div class="panel panel-cyan">
+          <div class="panel-label">The 3-Step Boot Sequence</div>
+          <ul class="boot-steps">
+            <li>
+              <span class="step-n">01</span>
+              <span>Read governance files &mdash; AGENTS.md, RULES.md, and any root-level protocol files in the working directory.</span>
+            </li>
+            <li>
+              <span class="step-n">02</span>
+              <span>Read assigned Drain Regions &mdash; locate the notebook registry and wiki index files and read their contents.</span>
+            </li>
+            <li>
+              <span class="step-n">03</span>
+              <span>Scan the working directory &mdash; establish current-state picture without making any modifications.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right: Zero Context Persistence -->
+      <div class="panel panel-cyan" style="display:flex; flex-direction:column; justify-content:center;">
+        <div class="panel-icon" style="font-size:24px; color:#00ffff66;">⊘</div>
+        <div class="panel-label">Zero Context Persistence</div>
+        <div class="panel-body">
+          Agents do <b>NOT carry forward assumptions</b> from previous sessions.<br><br>
+          Every execution is a <b>clean state</b> to prevent behavioral drift and context rot.<br><br>
+          The only persistent truth is what has been written to DISK. If it is not on disk, it does not exist for this session.<br><br>
+          All prior interactions, codebase assumptions, and in-memory context are fully purged at session boundary.
+        </div>
+        <hr class="div">
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+          <span class="badge badge-r">no carry-forward</span>
+          <span class="badge badge-g">disk = truth</span>
+          <span class="badge badge-c">clean-boot</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SECTION 3 ═══════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">SECTION 3</span>
+    <span class="section-title">The Cognitive Mandate &nbsp;(Zero Assumption)</span>
+  </div>
+  <div class="section-body">
+    <div class="grid-3">
+
+      <div class="panel panel-green">
+        <div class="panel-icon">⊘</div>
+        <div class="panel-label green">The Zero Assumption Mandate</div>
+        <div class="panel-body">
+          A hard axiom: the system must <b>NOT assume</b> project descriptions, repository states, or prior context are correct.<br><br>
+          Rely <b>ONLY on accessible files</b> and approved sources. All assumptions are forbidden.<br><br>
+          The exact information needed to solve any task already exists on disk. Dig deeper, search harder, interrogate local files before synthesizing anything.
+        </div>
+        <hr class="div">
+        <div class="panel-body" style="color:#1a4a2a; font-size:9px; margin-top:4px;">
+          ↳ Unverified research
+        </div>
+        <div style="margin-top:6px; background:#080f08; border:1px solid #00ff8822; padding:6px 8px; border-radius:2px;">
+          <div style="font-size:9px; color:#3a5a3a; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px;">Unverified Research</div>
+          <div style="font-size:10px; color:#2a6a4a; text-align:center; padding:4px; border:1px dashed #00ff8833;">BARRIER</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-icon">🛡</div>
+        <div class="panel-label">Strict Source Fidelity</div>
+        <div class="panel-body">
+          Only <b>official docs</b>, auditable repositories, or approved sources govern outputs.<br><br>
+          No training-knowledge gap-filling. No synthesis from memory.<br><br>
+          Approved source tiers: institutional, peer-reviewed (arxiv, researchgate), or top-tier academic only. No public opinions, no Stack Overflow as primary citation.
+        </div>
+      </div>
+
+      <div class="panel panel-red">
+        <div class="panel-icon">⚠</div>
+        <div class="panel-label red">The Quarantine Protocol</div>
+        <div class="panel-body">
+          Unverified research or uncertain findings are moved to a <b>barrier for screening.</b> Never promoted to the knowledge base without quorum-based Trinity verification.
+        </div>
+        <hr class="div">
+        <div class="panel-body" style="font-size:9px; color:#4a2a2a; margin-bottom:6px;">Quarantine flow:</div>
+        <div class="q-flow">
+          <div class="q-box">Unverified<br>research</div>
+          <div class="q-arrow">→</div>
+          <div class="q-box gate">BARRIER</div>
+          <div class="q-arrow">→</div>
+          <div class="q-box gate">Trinity<br>Gate</div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:6px; padding-left:60px;">
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span style="color:#2a5a40; font-size:11px;">↓</span>
+              <div class="q-box pass">PASS → /memory</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span style="color:#5a2a2a; font-size:11px;">↓</span>
+              <div class="q-box fail">FAIL → Quarantine</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SECTION 4 ═══════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">SECTION 4</span>
+    <span class="section-title">Task Ignition Sequence</span>
+  </div>
+  <div class="section-body">
+    <div class="task-grid">
+
+      <!-- Left: Steps 1 + 2 -->
+      <div style="display:flex; flex-direction:column; gap:12px;">
+
+        <div class="panel panel-cyan">
+          <div class="panel-label">Step 1: Read-Only Exploration</div>
+          <div class="panel-body">
+            Use <b>read-only tools</b> to conduct repository lookups and establish the contextual base layer without modifying the environment.<br><br>
+            No writes, no creates, no deletes. Sense the full state before acting.
+          </div>
+        </div>
+
+        <div class="panel" style="border-color:#4466ff44;">
+          <div class="panel-label blue">Step 2: Episodic Runtime Loop</div>
+          <div class="loop-row">
+            <div class="loop-node read">
+              <div class="ln-title">Read</div>
+              <div class="ln-sub">Active<br>Sensing</div>
+            </div>
+            <div class="loop-arr">→</div>
+            <div class="loop-node work">
+              <div class="ln-title">Work</div>
+              <div class="ln-sub">Reasoning</div>
+            </div>
+            <div class="loop-arr">→</div>
+            <div class="loop-node write">
+              <div class="ln-title">Write</div>
+              <div class="ln-sub">Artifact<br>Generation</div>
+            </div>
+            <div class="loop-arr">→</div>
+            <div class="loop-node stop">
+              <div class="ln-title">Stop</div>
+              <div class="ln-sub">Termination</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Persistence via Ralph Node -->
+      <div class="panel panel-gold" style="display:flex; flex-direction:column; justify-content:center;">
+        <div class="panel-icon" style="font-size:22px;">⚑</div>
+        <div class="panel-label gold">Persistence Via Ralph Node</div>
+        <div class="panel-body">
+          If the task requires repetition, the agent runs until the <b>specific goal is verified as clean.</b><br><br>
+          The <b>Ralph Node</b> is the verification checkpoint that confirms goal completion before the loop terminates.<br><br>
+          Before declaring any iterative task complete, the Ralph Node confirms that the goal artifact:
+        </div>
+        <ul class="boot-steps" style="margin-top:8px;">
+          <li><span class="step-n">✓</span><span>exists on DISK</span></li>
+          <li><span class="step-n">✓</span><span>matches the stated requirements</span></li>
+          <li><span class="step-n">✓</span><span>passes the Trinity Dialectic gate</span></li>
+        </ul>
+        <hr class="div">
+        <div style="font-size:9px; color:#3a3020; margin-top:4px;">
+          If Ralph Node check fails → re-enter loop from Work step.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SECTION 5 ═══════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">SECTION 5</span>
+    <span class="section-title">The 100% Confidence Loop &amp; Trinity Dialectic</span>
+  </div>
+  <div class="section-body">
+    <div class="trinity-grid">
+
+      <!-- Left: SVG Trinity Diagram -->
+      <div>
+        <svg width="380" height="340" viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="glow-b"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="glow-r"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="glow-g"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="glow-w"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+
+          <!-- Outer confidence ring -->
+          <circle cx="190" cy="170" r="130" fill="none" stroke="#ffffff18" stroke-width="1.5" stroke-dasharray="4 6"/>
+          <circle cx="190" cy="170" r="128" fill="none" stroke="#ffffff08" stroke-width="6" filter="url(#glow-w)"/>
+
+          <!-- Triangle connecting [Λ] [Π] [Θ] -->
+          <!-- Λ top-left: 80,60  Π bottom-center: 190,305  Θ top-right: 300,60 -->
+          <polygon points="80,62 300,62 190,278" fill="none" stroke="#2a2a5a" stroke-width="1" stroke-dasharray="3 5"/>
+
+          <!-- Connecting lines to center -->
+          <line x1="80" y1="62"  x2="190" y2="170" stroke="#1e3080" stroke-width="1" stroke-dasharray="2 4"/>
+          <line x1="300" y1="62" x2="190" y2="170" stroke="#3a1818" stroke-width="1" stroke-dasharray="2 4"/>
+          <line x1="190" y1="278" x2="190" y2="170" stroke="#0e3020" stroke-width="1" stroke-dasharray="2 4"/>
+
+          <!-- [0] Zero Root center -->
+          <circle cx="190" cy="170" r="32" fill="#050515" stroke="#00ffff88" stroke-width="1.5" filter="url(#glow-w)"/>
+          <circle cx="190" cy="170" r="28" fill="#07091a" stroke="#00ffff44" stroke-width="1"/>
+          <text x="190" y="165" text-anchor="middle" font-family="Courier New" font-size="18" fill="#00ffff" font-weight="700" filter="url(#glow-w)">[0]</text>
+          <text x="190" y="182" text-anchor="middle" font-family="Courier New" font-size="8" fill="#00ffff66" letter-spacing="1">ZERO ROOT</text>
+
+          <!-- [100] Confidence Gate ring label -->
+          <text x="190" y="26" text-anchor="middle" font-family="Courier New" font-size="9" fill="#ffffff44" letter-spacing="2">[100] CONFIDENCE GATE</text>
+
+          <!-- [Λ] Logos - top left -->
+          <circle cx="80" cy="62" r="28" fill="#04040e" stroke="#1e90ff66" stroke-width="1.5" filter="url(#glow-b)"/>
+          <circle cx="80" cy="62" r="24" fill="#06061a" stroke="#1e90ff33" stroke-width="1"/>
+          <text x="80" y="56" text-anchor="middle" font-family="Courier New" font-size="16" fill="#4488ff" font-weight="700" filter="url(#glow-b)">[Λ]</text>
+          <text x="80" y="71" text-anchor="middle" font-family="Courier New" font-size="8" fill="#4488ff88">LOGOS</text>
+
+          <!-- [Π] Pathos - bottom center -->
+          <circle cx="190" cy="292" r="28" fill="#0f0404" stroke="#ff222266" stroke-width="1.5" filter="url(#glow-r)"/>
+          <circle cx="190" cy="292" r="24" fill="#160606" stroke="#ff222233" stroke-width="1"/>
+          <text x="190" y="287" text-anchor="middle" font-family="Courier New" font-size="16" fill="#ff6666" font-weight="700" filter="url(#glow-r)">[Π]</text>
+          <text x="190" y="302" text-anchor="middle" font-family="Courier New" font-size="8" fill="#ff666688">PATHOS</text>
+
+          <!-- [Θ] Ethos - top right -->
+          <circle cx="300" cy="62" r="28" fill="#030f07" stroke="#39ff1466" stroke-width="1.5" filter="url(#glow-g)"/>
+          <circle cx="300" cy="62" r="24" fill="#050f08" stroke="#39ff1433" stroke-width="1"/>
+          <text x="300" y="56" text-anchor="middle" font-family="Courier New" font-size="16" fill="#00ff88" font-weight="700" filter="url(#glow-g)">[Θ]</text>
+          <text x="300" y="71" text-anchor="middle" font-family="Courier New" font-size="8" fill="#00ff8888">ETHOS</text>
+
+          <!-- Lock icons left/right -->
+          <text x="18" y="175" text-anchor="middle" font-family="Courier New" font-size="16" fill="#1a2a50">🔒</text>
+          <text x="362" y="175" text-anchor="middle" font-family="Courier New" font-size="16" fill="#1a2a50">🔒</text>
+
+          <!-- Score labels -->
+          <text x="190" y="322" text-anchor="middle" font-family="Courier New" font-size="9" fill="#2a4a30" letter-spacing="1">TRINITY SCORE ≥ 15 → PROCEED</text>
+        </svg>
+
+        <!-- Trinity of Trinities table -->
+        <div style="margin-top:4px;">
+          <div style="font-size:9px; letter-spacing:2px; color:#4466ff; text-transform:uppercase; margin-bottom:6px; font-weight:700;">The Trinity of Trinities (Recursive Evaluation)</div>
+          <table class="tot-table">
+            <thead>
+              <tr>
+                <th class="row-h"></th>
+                <th>External Logos</th>
+                <th>Optional Pathos</th>
+                <th>Internal Ethos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="row-label" style="color:#4488ff;">[Λ]</td>
+                <td>Logical Consistency</td>
+                <td>Creative Inference</td>
+                <td>Evidence Quality</td>
+              </tr>
+              <tr>
+                <td class="row-label" style="color:#ff6666;">[Π]</td>
+                <td>Possibility Desk</td>
+                <td>Vision / Purpose</td>
+                <td>Ethical Alignment</td>
+              </tr>
+              <tr>
+                <td class="row-label" style="color:#00ff88;">[Θ]</td>
+                <td>Justified Value</td>
+                <td>Practical Cohesion</td>
+                <td>Final Arbitration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right: Logos / Pathos / Ethos descriptions + Confidence Gate -->
+      <div class="trinity-right">
+
+        <div class="panel" style="border-color:#1e90ff44;">
+          <div class="panel-label blue">Logos: The Analytical Path</div>
+          <div class="panel-body">
+            Represents logic and proof. Logos takes the <b>shortest path to completion</b> and demands rigorous evidence for every claim.<br><br>
+            Is it logically consistent? Is this the shortest proven path?
+          </div>
+        </div>
+
+        <div class="panel" style="border-color:#ff222244;">
+          <div class="panel-label red">Pathos: The Creative Drive</div>
+          <div class="panel-body">
+            Represents the Default Mode Network (DMN) and purpose. Pathos takes the <b>longest, most extraordinary path</b> to achieve the dream — but cannot act without arbitration.<br><br>
+            Does this align with vision and purpose? What hidden connections exist?
+          </div>
+        </div>
+
+        <div class="panel" style="border-color:#39ff1444;">
+          <div class="panel-label green">Ethos: The Golden Mean</div>
+          <div class="panel-body">
+            The arbitrator (Phronesis / Practical Wisdom) that weights Logos and Pathos. Action is only permitted when both are in <b>prestored balance</b> and validated by 9 sub-evaluators.<br><br>
+            Is this ethically sound? Does it meet constraints? Is it practically executable?
+          </div>
+        </div>
+
+        <!-- Confidence Execution Gate -->
+        <div class="conf-gate">
+          <div class="conf-block" style="border-color:#4466ff44;">
+            <div class="cb-icon">🔒</div>
+            <div class="cb-label">The Confidence Execution Gate</div>
+            <div class="cb-body">
+              The agent must evaluate <b>3 categories of questions</b> (Architecture &amp; State, Evidence &amp; Sourcing, Intent &amp; Constraint) iteratively until all doubt is removed.<br><br>
+              <span class="badge badge-c">Q1: Architecture + State</span><br>
+              <span class="badge badge-b">Q2: Evidence + Sourcing</span><br>
+              <span class="badge badge-r">Q3: Intent + Constraints</span>
+            </div>
+          </div>
+          <div class="conf-block" style="border-color:#4466ff44;">
+            <div class="cb-icon">🔒</div>
+            <div class="cb-label">Proceed Gate</div>
+            <div class="cb-body">
+              DO NOT proceed until <b>100% confidence</b> is achieved.<br><br>
+              TRINITY_SCORE ≥ 15<br>
+              (3 lenses × 5 max each)<br><br>
+              <span class="badge badge-g">15/15 → PROCEED</span><br>
+              <span class="badge badge-r">&lt;15 → LOOP_BACK</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ FOOTER ═══════════════════════════════════ -->
+<div class="footer">
+  <span>0sXai · system_directive_protocol · ce-rd-os</span>
+  <span>v02 · 2026-04-29</span>
+  <span>CC-BY-4.0 · 0SxD</span>
+</div>
+
+</body>
+</html>

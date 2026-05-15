@@ -31,7 +31,10 @@ Experimental. Maintained by Sage / 0SxD as part of an ongoing research portfolio
   - `07_mi9_identity_guard.md` - agent identity stability under adversarial prompts
   - `08_stratum_architecture_pointer.md` - where this protocol fits in the full 0sXai stack
 - `examples/` - example CLAUDE.md showing full protocol composition
-- `_visuals/` - protocol blueprint diagram
+- `_visuals/` - blueprint-style diagrams referenced from individual modules
+- `docs/explorations/` - planning notes, handoff records, research drafts (work in progress)
+- `docs/wireframes/` - standalone HTML interactive prototypes
+- `docs/decks/` - presentation decks and longer-form visualizations
 
 ## Usage / How to read this
 
@@ -47,6 +50,17 @@ To adopt the full protocol: copy `examples/CLAUDE_md_example.md` into your proje
 - Anthropic Skills spec / agentskills.io - module composition pattern references the Agent Skills convention
 
 See also: [trinity-dialectic](https://github.com/0SxD/trinity-dialectic) for the runnable Python engine implementing the protocol's dialectic gate.
+
+## Visual exploration (work in progress)
+
+This repo includes visual artifacts and design explorations from active R&D into neuro-symbolic visual representation:
+
+- `_visuals/`: blueprint-style diagrams referenced from individual modules
+- `docs/explorations/`: planning notes, handoff records, and research drafts
+- `docs/wireframes/`: standalone HTML interactive prototypes
+- `docs/decks/`: presentation decks and longer-form visualizations
+
+These are works in progress. Some diagrams (notably the original `_visuals/protocol_mandate.png` and certain decks) have known errors and inconsistencies that have been identified but not yet corrected. NotebookLM was used as a research aid for several of the documents in `docs/explorations/`. Treat all material here as design exploration, not finalized specification.
 
 ## License
 
